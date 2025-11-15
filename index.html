@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ড্যাশবোর্ড</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font (Bangla fonts handle korbe) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            /* Noto Sans Bengali font use kora hoise */
+            font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
+        }
+        /* Chrome, Safari, Edge, Opera-te number input er arrow hide korar jonno */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        /* Firefox-e number input er arrow hide korar jonno */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Print korar shomoy অপ্রয়োজনীয় অংশ hide korar jonno */
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            .no-print {
+                display: none;
+            }
+            .print-container {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                max-width: 100%;
+                margin: 0;
+            }
+            #results {
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-lg bg-white rounded-2xl shadow-xl p-8 space-y-6 print-container">
+        
+        <!-- Shironam -->
+        <h1 class="text-3xl font-bold text-center text-indigo-700">ড্যাশবোর্ড</h1>
+        <p class="text-center text-gray-600 no-print">আপনার বেতন, বোনাস ও কর্তন ইনপুট করুন।</p>
+
+        <!-- Error Message Placeholder -->
+        <div id="error-message" class="hidden p-3 bg-red-100 text-red-700 rounded-lg text-center no-print"></div>
+
+        <!-- Input Form -->
+        <div class="space-y-4 no-print">
+            
+            <!-- Base Salary Input -->
+            <div class="grid grid-cols-3 gap-4">
+                <div class="col-span-2">
+                    <label for="baseSalary" class="block text-sm font-medium text-gray-700">আপনার বেতন (Gross)</label>
+                    <input type="number" id="baseSalary" placeholder="টাকার পরিমাণ" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="salaryType" class="block text-sm font-medium text-gray-700">ধরণ</label>
+                    <select id="salaryType" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="monthly">মাসিক</option>
+                        <option value="annual">বাৎসরিক</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Sonjojon o Bijoyon (Additions and Deductions) -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="bonuses" class="block text-sm font-medium text-gray-700">বোনাস / সংযোজন (যোগ)</label>
+                    <input type="number" id="bonuses" placeholder="যেমন: উৎসব ভাতা" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="deductions" class="block text-sm font-medium text-gray-700">অন্যান্য কর্তন (বিয়োগ)</label>
+                    <input type="number" id="deductions" placeholder="যেমন: আয়কর" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+            </div>
+            
+            <!-- PF Input -->
+            <div>
+                <label for="pfPercentage" class="block text-sm font-medium text-gray-700">প্রভিডেন্ট ফান্ড (PF) % (বেতনের উপর)</label>
+                <input type="number" id="pfPercentage" placeholder="যেমন: 10" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <!-- Kajer Shomoy (Work Hours) -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="daysPerWeek" class="block text-sm font-medium text-gray-700">সপ্তাহে কাজের দিন?</label>
+                    <input type="number" id="daysPerWeek" value="5" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="hoursPerDay" class="block text-sm font-medium text-gray-700">দৈনিক কাজের ঘণ্টা?</label>
+                    <input type="number" id="hoursPerDay" value="8" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+            </div>
+            
+            <!-- Overtime Input -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="overtimeHours" class="block text-sm font-medium text-gray-700">মাসিক ওভারটাইম ঘণ্টা</label>
+                    <input type="number" id="overtimeHours" placeholder="মোট ঘণ্টা" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="overtimeRate" class="block text-sm font-medium text-gray-700">ওভারটাইম রেট (গুণ)</label>
+                    <input type="number" id="overtimeRate" value="1.5" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+            </div>
+
+            <!-- Button Row -->
+            <div class="grid grid-cols-2 gap-4 pt-2">
+                <button onclick="calculateSalary()" class="w-full bg-indigo-600 text-white font-bold text-lg py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150">
+                    হিসাব করুন
+                </button>
+                <button onclick="printResults()" class="w-full bg-gray-600 text-white font-bold text-lg py-3 px-4 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-150">
+                    প্রিন্ট করুন
+                </button>
+            </div>
+        </div>
+
+        <!-- Folafol (Results) Section -->
+        <div id="results" class="hidden pt-6 space-y-4">
+            
+            <!-- Final Take-Home Pay -->
+            <div class="bg-indigo-50 p-4 rounded-lg text-center border border-indigo-200">
+                <p class="text-sm font-medium text-indigo-700">সর্বমোট মাসিক প্রাপ্য (ওভারটাইম সহ)</p>
+                <p id="finalMonthlyTakeHome" class="text-3xl font-bold text-indigo-900">৳ 0.00</p>
+            </div>
+
+            <!-- Bivajon (Breakdown) -->
+            <h2 class="text-xl font-semibold text-gray-800 text-center pt-4">বেতনের বিস্তারিত বিবরণ (মাসিক)</h2>
+            <div class="space-y-3">
+                
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-md font-medium text-gray-600">মোট মাসিক বেতন (Gross)</span>
+                    <span id="monthlyGross" class="text-lg font-bold text-gray-900">৳ 0.00</span>
+                </div>
+                
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-md font-medium text-gray-600">প্রভিডেন্ট ফান্ড (PF)</span>
+                    <span id="pfResult" class="text-lg font-bold text-red-600">- ৳ 0.00</span>
+                </div>
+                
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-md font-medium text-gray-600">অন্যান্য কর্তন</span>
+                    <span id="manualDeductionsResult" class="text-lg font-bold text-red-600">- ৳ 0.00</span>
+                </div>
+
+                <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <span class="text-md font-medium text-blue-800">কর্তন পরবর্তী মাসিক বেতন (Net)</span>
+                    <span id="netMonthlySalary" class="text-lg font-bold text-blue-900">৳ 0.00</span>
+                </div>
+
+                <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg border border-green-200">
+                    <span class="text-md font-medium text-green-800">মোট ওভারটাইম পে</span>
+                    <span id="overtimePayResult" class="text-lg font-bold text-green-900">+ ৳ 0.00</span>
+                </div>
+            </div>
+
+            <!-- Ghonta/Doinik Breakdown -->
+            <h2 class="text-xl font-semibold text-gray-800 text-center pt-4">বেতন বিভাজন (Gross অনুযায়ী)</h2>
+            <div class="space-y-3">
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-md font-medium text-gray-600">সাপ্তাহিক (Weekly)</span>
+                    <span id="weeklyGross" class="text-lg font-bold text-gray-900">৳ 0.00</span>
+                </div>
+                
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-md font-medium text-gray-600">দৈনিক (Daily)</span>
+                    <span id="dailyGross" class="text-lg font-bold text-gray-900">৳ 0.00</span>
+                </div>
+                
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-md font-medium text-gray-600">ঘণ্টায় (Hourly Rate)</span>
+                    <span id="hourlyRate" class="text-lg font-bold text-gray-900">৳ 0.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Helper function (Shohokari function) - Input theke number neyar jonno
+        function getVal(id, defaultValue = 0) {
+            const value = document.getElementById(id).value;
+            return parseFloat(value) || defaultValue;
+        }
+
+        // Taka format korar function (BDT formatting)
+        function formatCurrency(amount, includeSign = false) {
+            const formattedAmount = `৳ ${Math.abs(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            if (!includeSign) return formattedAmount;
+            
+            if (amount < 0) return `- ${formattedAmount}`;
+            if (amount > 0) return `+ ${formattedAmount}`;
+            return formattedAmount;
+        }
+
+        // Print function
+        function printResults() {
+            // Result section show korche kina check kora
+            const resultsEl = document.getElementById('results');
+            if (resultsEl.classList.contains('hidden')) {
+                // Jodi calculation na hoye thake, age calculation kora
+                if (!calculateSalary()) {
+                    // calculateSalary false return korle (error thakle) print hobena
+                    return; 
+                }
+            }
+            
+            // Shob show korar por print kora
+            // Ektu shomoy deya jate DOM update hote pare
+            setTimeout(() => {
+                window.print();
+            }, 100);
+        }
+
+        // Prodhan calculation function
+        function calculateSalary() {
+            const errorEl = document.getElementById('error-message');
+            const resultsEl = document.getElementById('results');
+            resultsEl.classList.add('hidden'); // Shurute result hide kora
+
+            // Shob input neya
+            const baseSalary = getVal('baseSalary');
+            const salaryType = document.getElementById('salaryType').value;
+            const periodBonuses = getVal('bonuses');
+            const periodManualDeductions = getVal('deductions');
+            const pfPercentage = getVal('pfPercentage');
+            const daysPerWeek = getVal('daysPerWeek', 5);
+            const hoursPerDay = getVal('hoursPerDay', 8);
+            const overtimeHours = getVal('overtimeHours');
+            const overtimeRate = getVal('overtimeRate', 1.5); // Default 1.5x
+
+            // --- Input validation ---
+            if (baseSalary <= 0) {
+                errorEl.innerText = 'অনুগ্রহ করে, সঠিক বেতন ইনপুট করুন।';
+                errorEl.classList.remove('hidden');
+                return false; // Error flag
+            }
+            if (daysPerWeek <= 0 || hoursPerDay <= 0) {
+                errorEl.innerText = 'কাজের দিন ও ঘণ্টা সঠিকভাবে দিন (অবশ্যই ০-এর বেশি হতে হবে)।';
+                errorEl.classList.remove('hidden');
+                return false; // Error flag
+            }
+            errorEl.classList.add('hidden'); // Error na thakle hide kora
+
+            // --- Calculation Shuru ---
+
+            // A. Gross Rates (pre-deduction) Hishab
+            // (Bonus o period er shathe jog kora)
+            const grossSalaryForPeriod = baseSalary + periodBonuses;
+            
+            let grossAnnualSalary;
+            if (salaryType === 'monthly') {
+                grossAnnualSalary = grossSalaryForPeriod * 12;
+            } else {
+                grossAnnualSalary = grossSalaryForPeriod;
+            }
+
+            const monthlyGross = grossAnnualSalary / 12;
+            const weeklyGross = grossAnnualSalary / 52;
+            const dailyGross = weeklyGross / daysPerWeek;
+            const hourlyRate = dailyGross / hoursPerDay;
+
+            // B. Korton (Deductions) Hishab (Shob monthly-te)
+            const pfAmountMonthly = monthlyGross * (pfPercentage / 100);
+            
+            let manualDeductionsMonthly;
+            if (salaryType === 'monthly') {
+                manualDeductionsMonthly = periodManualDeductions;
+            } else {
+                // Bachorik korton hole 12 diye vag kore monthly kora
+                manualDeductionsMonthly = periodManualDeductions / 12; 
+            }
+            
+            const totalMonthlyDeductions = pfAmountMonthly + manualDeductionsMonthly;
+
+            // C. Net Pay (Monthly) Hishab
+            const netMonthlySalary = monthlyGross - totalMonthlyDeductions;
+
+            // D. Overtime (Monthly) Hishab
+            const overtimePay = overtimeHours * (hourlyRate * overtimeRate);
+
+            // E. Final Take-Home Pay (Monthly) Hishab
+            const finalMonthlyTakeHome = netMonthlySalary + overtimePay;
+
+            // F. Folafol Dekhano
+            
+            // Mukhho Folafol
+            document.getElementById('finalMonthlyTakeHome').innerText = formatCurrency(finalMonthlyTakeHome);
+
+            // Masik Biboron
+            document.getElementById('monthlyGross').innerText = formatCurrency(monthlyGross);
+            document.getElementById('pfResult').innerText = formatCurrency(-pfAmountMonthly);
+            document.getElementById('manualDeductionsResult').innerText = formatCurrency(-manualDeductionsMonthly);
+            document.getElementById('netMonthlySalary').innerText = formatCurrency(netMonthlySalary);
+            document.getElementById('overtimePayResult').innerText = formatCurrency(overtimePay, true); // '+' sign jog korbe
+
+            // Onnanno Biboron
+            document.getElementById('weeklyGross').innerText = formatCurrency(weeklyGross);
+            document.getElementById('dailyGross').innerText = formatCurrency(dailyGross);
+            document.getElementById('hourlyRate').innerText = formatCurrency(hourlyRate);
+
+            // Results section show kora
+            resultsEl.classList.remove('hidden');
+            return true; // Success flag
+        }
+    </script>
+
+</body>
+</html>
